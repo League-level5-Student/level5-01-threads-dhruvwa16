@@ -8,15 +8,15 @@ ConcurrentLinkedQueue<Task> taskQueue;
 			
 	public ThreadPool(int i) {
 		threads = new Thread[i];
-		for (int j = 0; j < threads.length; j++) {
-			threads[i] = new Thread(()->new Worker());
-		}
 		taskQueue = new ConcurrentLinkedQueue<Task>();
+		for (int j = 0; j < threads.length; j++) {
+			threads[j] = new Thread(new Worker(taskQueue));
+		}
+		
 		// TODO Auto-generated constructor stub
 	}
 
 	public void addTask(Task task) {
-		// TODO Auto-generated method stub
 		taskQueue.add(task);
 	}
 
@@ -24,10 +24,14 @@ ConcurrentLinkedQueue<Task> taskQueue;
 		// TODO Auto-generated method stub
 		for (int i = 0; i < threads.length; i++) {
 			threads[i].start();
-			
+			try {
+				threads[i].join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 	}
-
 
 }
